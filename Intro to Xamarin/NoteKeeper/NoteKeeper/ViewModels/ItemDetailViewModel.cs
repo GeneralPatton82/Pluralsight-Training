@@ -1,5 +1,5 @@
 ﻿using System;
-
+using System.Collections.Generic;
 using NoteKeeper.Models;
 
 namespace NoteKeeper.ViewModels
@@ -7,14 +7,52 @@ namespace NoteKeeper.ViewModels
     public class ItemDetailViewModel : BaseViewModel
     {
         public Note Note { get; set; }
-        public ItemDetailViewModel(Item item = null)
+        public IList<String> CourseList { get; set; }
+
+        public bool IsNewNote { get; set; }
+
+        public String NoteHeading
         {
-            Title = item?.Text;
-            Note = new Note
+            get { return Note.Heading; }
+            set
             {
-                Heading = "Test Note",
-                Text = "Text for note in ViewModel"
-            };
+                Note.Heading = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public String NoteText
+        {
+            get { return Note.Text; }
+            set
+            {
+                Note.Text = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public String NoteCourse
+        {
+            get { return Note.Course; }
+            set
+            {
+                Note.Course = value;
+                OnPropertyChanged();
+            }
+        }
+            
+        public ItemDetailViewModel(Note note = null)
+        {
+            IsNewNote = note == null;
+
+            Title = "Edit note";
+            InitializeCourseList();
+            Note = note ?? new Note();
+
+        }
+        async void InitializeCourseList()
+        {
+            CourseList = await PluralsightDataStore.GetCoursesAsync();
         }
     }
 }

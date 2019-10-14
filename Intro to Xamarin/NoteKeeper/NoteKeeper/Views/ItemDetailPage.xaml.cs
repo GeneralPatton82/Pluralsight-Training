@@ -16,43 +16,36 @@ namespace NoteKeeper.Views
     public partial class ItemDetailPage : ContentPage
     {
         ItemDetailViewModel viewModel;
-        public IList<String> CourseList { get; set; }
 
         public ItemDetailPage(ItemDetailViewModel viewModel)
         {
             InitializeComponent();
-            InitializeData();
 
             this.viewModel = viewModel;
             BindingContext = this.viewModel;
-            NoteCourse.BindingContext = this;
         }
 
         public ItemDetailPage()
         {
             InitializeComponent();
-            InitializeData();
 
             viewModel = new ItemDetailViewModel();
             BindingContext = viewModel;
-            NoteCourse.BindingContext = this;
-        }
-
-        async void InitializeData()
-        {
-            var pluralsightDataStore = new MockPluralsightDataStore();
-            CourseList = await pluralsightDataStore.GetCoursesAsync();
-
         }
 
         public void Cancel_Clicked(object sender, EventArgs eventArgs)
         {
-            DisplayAlert("Cancel options", "Cancel was selected", "Button 2", "Button 1");
+            Navigation.PopModalAsync();
         }
 
         public void Save_Clicked(object sender, EventArgs eventArgs)
         {
-            DisplayAlert("Save options", "Save was clicked", "Button 2", "Button 1");
+
+            var message = viewModel.IsNewNote ? "SaveNote" : "EditNote";
+
+            MessagingCenter.Send(this, message, viewModel.Note);
+
+            Navigation.PopModalAsync();
         }
     }
 
